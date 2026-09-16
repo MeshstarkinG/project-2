@@ -516,6 +516,43 @@ button {
   font-size: 10px;
 }
 
+.comments-section {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: 18px;
+  padding: 16px 14px 10px;
+  box-shadow: 0 6px 18px rgba(17, 31, 54, 0.04);
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.comments-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.comments-header span {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+#disqus_thread {
+  width: 100%;
+  min-height: 300px;
+}
+
+#disqus_thread iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 .floating-cta {
   position: fixed;
   left: 50%;

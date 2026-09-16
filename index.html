@@ -233,6 +233,14 @@
             <small>1인 1회 10만원 이하 구매 준수 • 청소년 복권 판매 금지</small>
           </div>
         </section>
+
+        <section class="comments-section" aria-label="댓글">
+          <div class="comments-header">
+            <h3>댓글</h3>
+            <span>추천 번호 공유하기</span>
+          </div>
+          <div id="disqus_thread"></div>
+        </section>
       </main>
 
       <div class="floating-cta">
@@ -265,5 +273,19 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+      var disqus_config = function () {
+        this.page.url = 'https://meshstarking.github.io/project-2/';
+        this.page.identifier = 'lotto-recommend-app';
+      };
+
+      (function () {
+        var d = document;
+        var s = d.createElement('script');
+        s.src = 'https://meshstarking.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
   </body>
 </html>
