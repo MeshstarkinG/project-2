@@ -1,116 +1,72 @@
-const countRange = document.getElementById('countRange');
-const countValue = document.getElementById('countValue');
-const resultsEl = document.getElementById('results');
-const bonusToggle = document.getElementById('bonusToggle');
-const patternText = document.getElementById('patternText');
-const rangeText = document.getElementById('rangeText');
-const luckText = document.getElementById('luckText');
+function getBallClass(num) {
+  if (num <= 10) return 'ball-yellow';
+  if (num <= 20) return 'ball-blue';
+  if (num <= 30) return 'ball-red';
+  if (num <= 40) return 'ball-grey';
+  return 'ball-green';
+}
 
-const generateBtn = document.getElementById('generateBtn');
-const resetBtn = document.getElementById('resetBtn');
-
-const numberColors = ['red', 'blue', 'green', 'gold', 'purple'];
-
-const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-const createSet = () => {
-  const pool = Array.from({ length: 45 }, (_, index) => index + 1);
-  const numbers = [];
-
-  while (numbers.length < 6) {
-    const index = getRandomInt(0, pool.length - 1);
-    const value = pool.splice(index, 1)[0];
-    numbers.push(value);
+function generateRandom6() {
+  const nums = new Set();
+  while (nums.size < 6) {
+    nums.add(Math.floor(Math.random() * 45) + 1);
   }
+  return Array.from(nums).sort((a, b) => a - b);
+}
 
-  return numbers.sort((a, b) => a - b);
-};
-
-const describePattern = (numbers) => {
-  const odd = numbers.filter((n) => n % 2 === 1).length;
-  const even = numbers.length - odd;
-  const low = numbers.filter((n) => n <= 22).length;
-  const high = numbers.length - low;
-
-  if (odd >= 4 && even >= 2) return '균형형';
-  if (low >= 4 && high >= 2) return '고저형';
-  if (numbers.some((n, i) => i > 0 && n - numbers[i - 1] === 1)) return '연속형';
-  if (odd === 6 || even === 6) return '홀/짝 집중형';
-  return '랜덤형';
-};
-
-const formatRange = (numbers) => {
-  const min = Math.min(...numbers);
-  const max = Math.max(...numbers);
-  return `${min}~${max}`;
-};
-
-const buildLuckyText = () => {
-  const offset = getRandomInt(5, 29);
-  return `+${offset}`;
-};
-
-const renderResults = (count) => {
-  const sets = Array.from({ length: count }, () => createSet());
-  const pattern = describePattern(sets[0] || [1, 2, 3, 4, 5, 6]);
-
-  patternText.textContent = pattern;
-  rangeText.textContent = sets.length ? formatRange(sets.flat()) : '1~45';
-  luckText.textContent = buildLuckyText();
-
-  resultsEl.innerHTML = sets
-    .map((numbers, index) => {
-      const bonus = bonusToggle.checked ? getRandomInt(1, 45) : null;
-      const displayNumbers = [...numbers];
-      const bonusDisplay = bonus !== null ? [bonus] : [];
-      const allNumbers = [...displayNumbers, ...bonusDisplay];
-
-      return `
-        <article class="result-card">
-          <div class="result-header">
-            <h2>추천 세트 ${index + 1}</h2>
-            <span class="badge">행운</span>
-          </div>
-          <div class="number-row">
-            ${displayNumbers
-              .map((number, idx) => `
-                <span class="lotto-ball" data-tone="${numberColors[(idx + index) % numberColors.length]}">${number}</span>
-              `)
-              .join('')}
-            ${bonus !== null ? `<span class="lotto-ball" data-tone="gold">${bonus}</span>` : ''}
-          </div>
-          <div class="meta-row">
-            <span>숫자 분포</span>
-            <strong>${allNumbers.length}개</strong>
-          </div>
-        </article>
-      `;
-    })
+function renderGameRow(containerId, numbers) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = numbers
+    .map((number) => `<div class="lotto-ball ${getBallClass(number)}">${number}</div>`)
     .join('');
-};
+}
 
-const updateCountValue = () => {
-  countValue.textContent = `${countRange.value}개`;
-};
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
 
-countRange.addEventListener('input', () => {
-  updateCountValue();
-  renderResults(Number(countRange.value));
+  toast.textContent = message;
+  toast.classList.add('visible');
+
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 1800);
+}
+
+function copyGame(numsText) {
+  navigator.clipboard?.writeText(numsText)
+    .then(() => showToast(`복사완료: ${numsText}`))
+    .catch(() => showToast(`복사완료: ${numsText}`));
+}
+
+function toggleBookmark(button) {
+  const icon = button.querySelector('.material-symbols-outlined');
+  if (!icon) return;
+
+  if (icon.textContent === 'bookmark_border') {
+    icon.textContent = 'bookmark';
+    icon.style.fontVariationSettings = "'FILL' 1";
+    button.classList.add('active');
+    showToast('저장내역에 보관되었습니다.');
+  } else {
+    icon.textContent = 'bookmark_border';
+    icon.style.fontVariationSettings = "'FILL' 0";
+    button.classList.remove('active');
+    showToast('저장내역에서 제거되었습니다.');
+  }
+}
+
+const rows = ['game-row-a', 'game-row-b', 'game-row-c', 'game-row-d', 'game-row-e'];
+
+rows.forEach((rowId) => {
+  renderGameRow(rowId, generateRandom6());
 });
 
-bonusToggle.addEventListener('change', () => {
-  renderResults(Number(countRange.value));
+document.getElementById('generate-btn')?.addEventListener('click', () => {
+  rows.forEach((rowId) => {
+    renderGameRow(rowId, generateRandom6());
+  });
+  showToast('새로운 추천 번호 5게임이 생성되었습니다!');
 });
-
-generateBtn.addEventListener('click', () => {
-  renderResults(Number(countRange.value));
-});
-
-resetBtn.addEventListener('click', () => {
-  countRange.value = '5';
-  updateCountValue();
-  renderResults(5);
-});
-
-updateCountValue();
-renderResults(5);
