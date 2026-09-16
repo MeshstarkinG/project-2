@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로또 번호 추천</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand-mark">🎯</div>
+          <div>
+            <p class="eyebrow">LOTTO ADVISOR</p>
+            <h1>로또 번호 추천</h1>
+          </div>
+        </div>
+        <button id="generateBtn" class="primary-btn">번호 다시 뽑기</button>
+      </header>
+
+      <main class="main-panel">
+        <section class="controls">
+          <div class="control-box">
+            <label for="countRange">추천 세트 수</label>
+            <div class="range-row">
+              <input id="countRange" type="range" min="1" max="10" value="5" />
+              <span id="countValue">5개</span>
+            </div>
+          </div>
+
+          <div class="control-box checkbox-wrap">
+            <label for="bonusToggle">보너스 번호 표시</label>
+            <input id="bonusToggle" type="checkbox" checked />
+          </div>
+
+          <button id="resetBtn" class="secondary-btn">초기화</button>
+        </section>
+
+        <section class="summary-row">
+          <div class="summary-card">
+            <span>추천 패턴</span>
+            <strong id="patternText">균형형</strong>
+          </div>
+          <div class="summary-card">
+            <span>평균 숫자 범위</span>
+            <strong id="rangeText">1~45</strong>
+          </div>
+          <div class="summary-card">
+            <span>최근 행운 포인트</span>
+            <strong id="luckText">+22</strong>
+          </div>
+        </section>
+
+        <section id="results" class="results" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
